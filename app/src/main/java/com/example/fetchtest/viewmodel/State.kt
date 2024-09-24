@@ -10,4 +10,5 @@ sealed class State {
     data class Success(val items: List<Item>) : State()
     data class Fail(val reason: String) : State()
     data object Loading : State()
+    data class Empty(val reason: String) : State()
 }
