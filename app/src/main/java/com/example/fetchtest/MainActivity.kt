@@ -1,10 +1,14 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.example.fetchtest
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -61,11 +66,8 @@ fun FetchListScreen(modifier: Modifier = Modifier) {
     // Enhance: observing same flow but I only care about this filtered items
     val state = viewModel.state.collectAsStateWithLifecycle()
 
-    // Sets group number bg color so user can see it clearly
-    val colors = listOf(Color.Red, Color.Blue, Color.Yellow, Color.DarkGray, Color.LightGray)
-
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
@@ -96,23 +98,68 @@ fun FetchListScreen(modifier: Modifier = Modifier) {
             }
 
             is State.Success -> {
-                val items: List<Item> = result.items
-                LazyColumn {
-                    items(items) { item ->
-                        Column(modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(6.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(colors[item.listId % colors.size].copy(alpha = 0.5f))
-                            .padding(12.dp)
-                        ) {
-                            Text(text = "id    : ${item.id}")
-                            Text(text = "listId: ${item.listId}")
-                            Text(text = "name  : ${item.name ?:""}")
-                        }
-                    }
-                }
+                ItemsScreen(result.items)
             }
         }
+    }
+}
+
+@Composable
+fun ItemsScreen(items: List<Item>) {
+
+    // Sets group number bg color so user can see it clearly
+    val colors = listOf(Color.Red, Color.LightGray, Color.Yellow, Color.Gray, Color.Cyan)
+
+    // convert the items to a group (by listId) and their items
+    val grouped: Map<Int, List<Item>> = items.groupBy { it.listId }
+
+    LazyColumn {
+        // now give each group (and its items) to header and items row
+        grouped.forEach { (listId, items) ->
+            // picks a color from out list according the list id
+            val color = colors[listId % colors.size]
+            // render the header
+            stickyHeader {
+                Header(listId, color)
+            }
+            // render the items
+            items(items) { item: Item ->
+                Item(item, color)
+            }
+        }
+    }
+}
+
+/**
+ * This is the little sticky header.
+ */
+@Composable
+fun Header(listId: Int, color: Color) {
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .background(color) // a solid color
+    ) {
+      Text(modifier = Modifier
+          .padding(5.dp),
+          text = "LIST ID GROUP: $listId",
+          fontStyle = FontStyle.Italic
+      )
+    }
+}
+
+
+@Composable
+fun Item(item: Item, color: Color) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(6.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(color.copy(alpha = 0.3f))
+            .padding(12.dp)
+    ) {
+        Text(text = "id    : ${item.id}")
+        Text(text = "listId: ${item.listId}")
+        Text(text = "name  : ${item.name ?: ""}")
     }
 }
