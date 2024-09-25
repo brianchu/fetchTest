@@ -20,6 +20,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -111,7 +112,7 @@ fun ItemsScreen(items: List<Item>) {
     val colors = listOf(Color.Red, Color.LightGray, Color.Yellow, Color.Gray, Color.Cyan)
 
     // convert the items to a group (by listId) and their items
-    val grouped: Map<Int, List<Item>> = items.groupBy { it.listId }
+    val grouped: Map<Int, List<Item>> = remember(items) { items.groupBy { it.listId } }
 
     LazyColumn {
         // now give each group (and its items) to header and items row
