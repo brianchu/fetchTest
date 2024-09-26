@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -57,11 +58,11 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/**
+ * note we pass in viewModel easy for testing, we could also use other inject lib
+ */
 @Composable
-fun FetchListScreen(modifier: Modifier = Modifier) {
-
-    // Injects view model with the help from library
-    val viewModel: ItemsViewModel = viewModel()
+fun FetchListScreen(modifier: Modifier = Modifier, viewModel: ItemsViewModel = viewModel()) {
 
     // Observes the flow
     // Enhance: observing same flow but I only care about this filtered items
@@ -74,7 +75,7 @@ fun FetchListScreen(modifier: Modifier = Modifier) {
     ) {
         // Always a title
         Text(
-            modifier = Modifier,
+            modifier = Modifier.testTag("title"),
             text = "Fetch items"
         )
 
@@ -82,18 +83,18 @@ fun FetchListScreen(modifier: Modifier = Modifier) {
         when (val result = state.value) {
             is State.Fail -> {
                 Text(
-                    modifier = Modifier,
+                    modifier = Modifier.testTag("fail-message"),
                     text = "Fetch fail ${result.reason}",
                 )
             }
 
             State.Loading -> {
-                CircularProgressIndicator()
+                CircularProgressIndicator(modifier = Modifier.testTag("loading"))
             }
 
             is State.Empty -> {
                 Text(
-                    modifier = Modifier,
+                    modifier = Modifier.testTag("empty-message"),
                     text = "Empty list: ${result.reason}",
                 )
             }
@@ -114,7 +115,7 @@ fun ItemsScreen(items: List<Item>) {
     // convert the items to a group (by listId) and their items
     val grouped: Map<Int, List<Item>> = remember(items) { items.groupBy { it.listId } }
 
-    LazyColumn {
+    LazyColumn(modifier = Modifier.testTag("main-column")) {
         // now give each group (and its items) to header and items row
         grouped.forEach { (listId, items) ->
             // picks a color from out list according the list id
@@ -125,7 +126,7 @@ fun ItemsScreen(items: List<Item>) {
             }
             // render the items
             items(items) { item: Item ->
-                Item(item, color)
+                ItemRow(item, color)
             }
         }
     }
@@ -150,9 +151,10 @@ fun Header(listId: Int, color: Color) {
 
 
 @Composable
-fun Item(item: Item, color: Color) {
+fun ItemRow(item: Item, color: Color) {
     Column(
         modifier = Modifier
+            .testTag("item-row-${item.id}")
             .fillMaxWidth()
             .padding(6.dp)
             .clip(RoundedCornerShape(16.dp))

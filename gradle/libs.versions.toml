@@ -1,3 +1,7 @@
+
+# DO NOT JUST UPGRADE EVERY TO LATEST, YOU WILL PROBABLY HAIRS
+# particular Compose, injection, and test libraries upgrade must be done incrementally
+
 [versions]
 agp = "8.6.1"
 kotlin = "1.9.0"
@@ -14,11 +18,18 @@ lifecycleViewmodel = "2.8.5"
 lifecycleViewmodelCompose = "2.8.5"
 lifecycleRuntimeComposeAndroid = "2.8.6"
 
+mockito = "5.12.0"
+mockito-kotlin = "5.4.0"
+kotlinx-coroutines-test = "1.8.1"
+
+mockk="1.13.12"
+mockk-android="1.13.12"
+mockk-agent="1.13.12"
+
+core-testing = "2.2.0"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
@@ -34,6 +45,21 @@ retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson", ver
 androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "lifecycleViewmodel" }
 androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 androidx-lifecycle-runtime-compose-android = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose-android", version.ref = "lifecycleRuntimeComposeAndroid" }
+
+# testing
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
+mockito-android = { group = "org.mockito", name = "mockito-android", version.ref = "mockito" }
+mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockito-kotlin" }
+jetbrains-kotlinx-coroutines-test = { group="org.jetbrains.kotlinx", name="kotlinx-coroutines-test", version.ref = "kotlinx-coroutines-test" }
+
+io-mockk = {group = "io.mockk", name = "mockk", version.ref = "mockk"}
+io-mockk-agent = {group = "io.mockk", name = "mockk-agent", version.ref = "mockk-agent"}
+io-mockk-android = {group = "io.mockk", name = "mockk-android", version.ref = "mockk-android"}
+
+androidx-arch-core-testing = { group = "androidx.arch.core", name="core-testing", version.ref = "core-testing"}
 
 
 [plugins]

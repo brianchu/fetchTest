@@ -11,12 +11,13 @@ interface FetchApi {
 
 private const val URL = "https://fetch-hiring.s3.amazonaws.com"
 
-object RetrofitInstance {
-    val api : FetchApi by lazy {
+class RetrofitInstance {
+    val api : FetchApi =
         Retrofit.Builder()
             .baseUrl(URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(FetchApi::class.java)
-    }
+
+    // ... other api goes here
 }

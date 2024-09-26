@@ -2,6 +2,7 @@ package com.example.fetchtest.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.fetchtest.model.FetchApi
 import com.example.fetchtest.model.Item
 import com.example.fetchtest.model.RetrofitInstance
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +22,9 @@ import kotlinx.coroutines.launch
  * I do assume we want to minimize network fetching to 1 time. so we keep
  * the raw data.
  */
-class ItemsViewModel : ViewModel() {
+class ItemsViewModel(
+   private val fetchApi: FetchApi = RetrofitInstance().api
+) : ViewModel() {
     // Maintain a state flow
     private var _state = MutableStateFlow<State>(State.Loading)
 
@@ -39,7 +42,7 @@ class ItemsViewModel : ViewModel() {
         // launch a coroutine using non UI thread so it won't block main thread
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                rawData = RetrofitInstance.api.getItems()
+                rawData = fetchApi.getItems()
                 applyFilterAndSort(filterRule)
             } catch (e: Exception) {
                 _state.value = State.Fail(e.message ?: "unknown error")
@@ -60,6 +63,7 @@ class ItemsViewModel : ViewModel() {
 
     // This is the rule to filter the data, if we want flexible, we could
     // put it in the View passing in or create a set of rules for different views.
+    // Also, they are sort lexicographically (if not need to parse the item XXX as numerical)
     private var filterRule: (List<Item>) -> List<Item> = { items: List<Item> ->
         items
             .filter {

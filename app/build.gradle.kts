@@ -42,6 +42,13 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            // after adding mockk, duplicate happens, merge license
+            merges +="META-INF/LICENSE-notice.md"
+            merges +="META-INF/LICENSE.md"
+        }
+        jniLibs {
+            // this solve the mockk not attached issue
+            useLegacyPackaging = true
         }
     }
 }
@@ -61,14 +68,27 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.lifecycle.runtime.compose.android)
+
+    // testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
+
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+
+    testImplementation(libs.io.mockk.android)
+    testImplementation(libs.io.mockk.agent)
+    androidTestImplementation(libs.io.mockk.android)
+    androidTestImplementation(libs.io.mockk.agent)
+
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+    androidTestImplementation(libs.mockito.android)
+    androidTestImplementation(libs.mockito.kotlin)
+    testImplementation(libs.jetbrains.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.arch.core.testing)
+
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
-
-
 }
