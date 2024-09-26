@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalFoundationApi::class)
+@file:OptIn(ExperimentalFoundationApi::class, ExperimentalFoundationApi::class)
 
 package com.example.fetchtest
 
@@ -17,21 +17,28 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fetchtest.model.Item
 import com.example.fetchtest.ui.theme.FetchTestTheme
+import com.example.fetchtest.ui.theme.onPrimaryContainerLight
+import com.example.fetchtest.ui.theme.primaryContainerLight
+import com.example.fetchtest.ui.theme.secondaryContainerLight
+import com.example.fetchtest.ui.theme.tertiaryContainerLight
 import com.example.fetchtest.viewmodel.ItemsViewModel
 import com.example.fetchtest.viewmodel.State
 
@@ -110,23 +117,25 @@ fun FetchListScreen(modifier: Modifier = Modifier, viewModel: ItemsViewModel = v
 fun ItemsScreen(items: List<Item>) {
 
     // Sets group number bg color so user can see it clearly
-    val colors = listOf(Color.Red, Color.LightGray, Color.Yellow, Color.Gray, Color.Cyan)
+    val colors = listOf(primaryContainerLight, secondaryContainerLight, tertiaryContainerLight)
 
     // convert the items to a group (by listId) and their items
     val grouped: Map<Int, List<Item>> = remember(items) { items.groupBy { it.listId } }
 
-    LazyColumn(modifier = Modifier.testTag("main-column")) {
-        // now give each group (and its items) to header and items row
-        grouped.forEach { (listId, items) ->
-            // picks a color from out list according the list id
-            val color = colors[listId % colors.size]
-            // render the header
-            stickyHeader {
-                Header(listId, color)
-            }
-            // render the items
-            items(items) { item: Item ->
-                ItemRow(item, color)
+    CompositionLocalProvider(LocalContentColor provides onPrimaryContainerLight) {
+        LazyColumn(modifier = Modifier.testTag("main-column")) {
+            // now give each group (and its items) to header and items row
+            grouped.forEach { (listId, items) ->
+                // picks a color from out list according the list id
+                val color = colors[listId % colors.size]
+                // render the header
+                stickyHeader {
+                    Header(listId, color)
+                }
+                // render the items
+                items(items) { item: Item ->
+                    ItemRow(item, color)
+                }
             }
         }
     }
@@ -137,15 +146,17 @@ fun ItemsScreen(items: List<Item>) {
  */
 @Composable
 fun Header(listId: Int, color: Color) {
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .background(color) // a solid color
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color)
     ) {
-      Text(modifier = Modifier
-          .padding(5.dp),
-          text = "LIST ID GROUP: $listId",
-          fontStyle = FontStyle.Italic
-      )
+        Text(
+            modifier = Modifier
+                .padding(5.dp),
+            text = "LIST ID GROUP: $listId",
+            fontStyle = FontStyle.Italic
+        )
     }
 }
 
@@ -158,7 +169,7 @@ fun ItemRow(item: Item, color: Color) {
             .fillMaxWidth()
             .padding(6.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(color.copy(alpha = 0.3f))
+            .background(color)
             .padding(12.dp)
     ) {
         Text(text = "id    : ${item.id}")

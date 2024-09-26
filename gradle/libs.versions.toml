@@ -27,6 +27,7 @@ mockk-android="1.13.12"
 mockk-agent="1.13.12"
 
 core-testing = "2.2.0"
+uiTextGoogleFonts = "1.7.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -60,6 +61,7 @@ io-mockk-agent = {group = "io.mockk", name = "mockk-agent", version.ref = "mockk
 io-mockk-android = {group = "io.mockk", name = "mockk-android", version.ref = "mockk-android"}
 
 androidx-arch-core-testing = { group = "androidx.arch.core", name="core-testing", version.ref = "core-testing"}
+androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
 
 
 [plugins]
